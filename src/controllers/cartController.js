@@ -1,6 +1,7 @@
 import db from "../db.js";
 
 async function addCartProducts(req, res) {
+    
     try {
         res.send('Rota ativa');
     } catch (error) {

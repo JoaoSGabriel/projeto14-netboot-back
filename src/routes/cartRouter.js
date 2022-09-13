@@ -3,6 +3,7 @@ import { addCartProducts, getCartProducts, removeCartProducts, cleanCart } from 
 
 const cartRouter = Router();
 
+
 cartRouter.post('/cart', addCartProducts);
 cartRouter.get('/cart', getCartProducts);
 cartRouter.delete('/cart/:id', removeCartProducts);
