@@ -14,14 +14,14 @@ async function signUp(req, res) {
       .send(validation.error.details.map((value) => value.message));
   }
 
-  const crypt_Password = bcrypt.hashSync(password, 10);
+  const crypt_Password = bcrypt.hashSync(stripHtml(password).result, 10);
 
   try {
     const user = await db.collection("users").findOne({ email });
     if (user === null) {
       await db.collection("users").insertOne({
-        name,
-        email,
+        name: stripHtml(name).result,
+        email: stripHtml(email).result,
         password: crypt_Password,
       });
       return res.sendStatus(201);
@@ -43,6 +43,9 @@ async function signIn(req, res) {
       .status(422)
       .send(validation.error.details.map((value) => value.message));
   }
+
+  email = stripHtml(email).result;
+  password = stripHtml(password).result;
 
   try {
     const user = await db.collection("users").findOne({ email });
