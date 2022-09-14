@@ -38,7 +38,6 @@ async function signIn(req, res) {
 
   const validation = signIn_Schema.validate(req.body, { abortEarly: false });
   if (validation.error) {
-    // 422
     return res
       .status(422)
       .send(validation.error.details.map((value) => value.message));
