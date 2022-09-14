@@ -4,9 +4,10 @@ import privateToken from "../middlewares/privateRouteMiddleware.js";
 
 const productRouter = Router();
 
-productRouter.use(privateToken);
 
-productRouter.get('/products', getProducts);
 productRouter.post('/products', postProducts);
+
+productRouter.use(privateToken);
+productRouter.get('/products', getProducts);
 
 export default productRouter;

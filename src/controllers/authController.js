@@ -43,12 +43,12 @@ async function signIn(req, res) {
       .send(validation.error.details.map((value) => value.message));
   }
 
-  email = stripHtml(email).result;
-  password = stripHtml(password).result;
+  const stripEmail = stripHtml(email).result;
+  const stripPassword = stripHtml(password).result;
 
   try {
-    const user = await db.collection("users").findOne({ email });
-    if (user && bcrypt.compareSync(password, user.password)) {
+    const user = await db.collection("users").findOne({email: stripEmail});
+    if (user && bcrypt.compareSync(stripPassword, user.password)) {
       const token = uuid();
       const session = {
         userID: user._id,
