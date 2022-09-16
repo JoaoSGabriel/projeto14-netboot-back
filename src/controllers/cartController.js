@@ -14,7 +14,7 @@ async function addCartProducts(req, res) {
 
 async function getCartProducts(req, res) {
   try {
-    const products = await db.collection("products").find().toArray();
+    const products = await db.collection("cart").find().toArray();
     res.status(200).send(products);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -34,7 +34,7 @@ async function removeCartProducts(req, res) {
 
 async function cleanCart(req, res) {
   try {
-    await db.collection("products").deleteMany({});
+    await db.collection("cart").deleteMany({});
     res.sendStatus(200);
   } catch (error) {
     return res.status(500).send(error.message);
