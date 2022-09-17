@@ -14,6 +14,6 @@ cartRouter.use(privateToken);
 cartRouter.post("/cart", addCartProducts);
 cartRouter.get("/cart", getCartProducts);
 cartRouter.delete("/cart/:id", removeCartProducts);
-cartRouter.delete("/cart/all", cleanCart);
+cartRouter.delete("/cleanCart", cleanCart);
 
 export default cartRouter;
