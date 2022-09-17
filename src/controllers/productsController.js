@@ -39,4 +39,4 @@ async function getOneProduct(req, res) {
   }
 }
 
-export { getProducts, postProducts };
+export { getProducts, postProducts, getOneProduct };
