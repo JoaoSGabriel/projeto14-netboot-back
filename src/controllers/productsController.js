@@ -45,7 +45,7 @@ async function addFavoriteProduct(req, res) {
   try {
     const product = await db.collection("products").findOne({ _id: new ObjectId(id) });
     if (!product) return res.sendStatus(404);
-    
+
     await db.collection("products").updateOne({_id: new ObjectId(id)}, {$set:{
       product,
       favorite: [...product.favorite, res.locals.session.userID]
@@ -57,4 +57,19 @@ async function addFavoriteProduct(req, res) {
   }
 }
 
-export { getProducts, postProducts, getOneProduct, addFavoriteProduct };
+async function removeFavoriteProduct(req, res) {
+  const { id } = req.params;
+
+  try {
+    const product = await db.collection("products").findOne({ _id: new ObjectId(id) });
+    if (!product) return res.sendStatus(404);
+
+    await db.collection("products").updateOne({_id: new ObjectId(id)}, {$set:req.body});
+
+    return res.sendStatus(200);
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+}
+
+export { getProducts, postProducts, getOneProduct, addFavoriteProduct, removeFavoriteProduct };
