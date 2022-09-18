@@ -47,7 +47,6 @@ async function addFavoriteProduct(req, res) {
     if (!product) return res.sendStatus(404);
 
     await db.collection("products").updateOne({_id: new ObjectId(id)}, {$set:{
-      product,
       favorite: [...product.favorite, res.locals.session.userID]
     }});
 
