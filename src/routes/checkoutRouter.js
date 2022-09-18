@@ -11,6 +11,6 @@ const checkoutRouter = Router();
 checkoutRouter.use(privateToken);
 
 checkoutRouter.post("/checkout", postCheckout);
-checkoutRouter.get("/checkout");
+checkoutRouter.get("/checkout", getCheckout);
 
 export default checkoutRouter;
