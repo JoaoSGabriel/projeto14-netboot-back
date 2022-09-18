@@ -2,7 +2,7 @@ import joi from "joi";
 
 const userSchema = joi.object({
   name: joi.string().trim().min(1).required(),
-  email: joi.email().required(),
+  email: joi.string().email().required(),
 });
 
 const cartSchema = joi.object({
@@ -15,10 +15,10 @@ const cartSchema = joi.object({
 });
 
 const bankSchema = joi.object({
-  number: joi.number().integer().required(),
+  numberCard: joi.number().integer().required(),
   name: joi.string().trim().min(1).required(),
-  date: joi.string().trim().min(1).required(),
-  cvv: joi.string().trim().min(1).required(),
+  date: joi.string().trim().min(5).required(),
+  cvv: joi.number().integer().required(),
 });
 
 const adressSchema = joi.object({

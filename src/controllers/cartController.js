@@ -1,8 +1,16 @@
 import db from "../db.js";
 import { ObjectId } from "mongodb";
+import { cartSchema } from "../schemas/cartSchema.js";
 
 async function addCartProducts(req, res) {
-  const { name, price, brand, size, description, URLimage } = req.body;
+  const { id, name, price, brand, size, description, URLimage, qt } = req.body;
+
+  const validationCart = cartSchema.validate(req.body, { abortEarly: false });
+  if (validationCart.error) {
+    return res
+      .status(422)
+      .send(validationCart.error.details.map((value) => value.message));
+  }
 
   try {
     await db.collection("cart").insertOne(req.body);
