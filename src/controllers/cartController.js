@@ -2,7 +2,7 @@ import db from "../db.js";
 import { ObjectId } from "mongodb";
 
 async function addCartProducts(req, res) {
-  const { name, price, brand, sizes, description, URLimage } = req.body;
+  const { name, price, brand, size, description, URLimage } = req.body;
 
   try {
     await db.collection("cart").insertOne(req.body);

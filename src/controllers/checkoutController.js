@@ -1,9 +1,28 @@
 import db from "../db.js";
-import { bankSchema, adressSchema } from "../schemas/checkoutSchema.js";
+import {
+  userSchema,
+  cartSchema,
+  bankSchema,
+  adressSchema,
+} from "../schemas/checkoutSchema.js";
 import { stripHtml } from "string-strip-html";
 
 export async function postCheckout(req, res) {
   let { user, cart, bank, adress } = req.body;
+
+  const validationUser = userSchema.validate(user, { abortEarly: false });
+  if (validationUser.error) {
+    return res
+      .status(422)
+      .send(validationUser.error.details.map((value) => value.message));
+  }
+
+  const validationCart = cartSchema.validate(cart, { abortEarly: false });
+  if (validationCart.error) {
+    return res
+      .status(422)
+      .send(validationCart.error.details.map((value) => value.message));
+  }
 
   const validationBank = bankSchema.validate(bank, { abortEarly: false });
   if (validationBank.error) {
