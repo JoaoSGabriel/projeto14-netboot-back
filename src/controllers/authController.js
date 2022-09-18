@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import db from "../db.js";
 import { signUp_Schema, signIn_Schema } from "../schemas/authSchema.js";
 import { stripHtml } from "string-strip-html";
+import { ObjectId } from "mongodb";
 
 async function signUp(req, res) {
   const { name, email, password } = req.body;
@@ -47,7 +48,7 @@ async function signIn(req, res) {
   const stripPassword = stripHtml(password).result;
 
   try {
-    const user = await db.collection("users").findOne({email: stripEmail});
+    const user = await db.collection("users").findOne({ email: stripEmail });
     if (user && bcrypt.compareSync(stripPassword, user.password)) {
       const token = uuid();
       const session = {
@@ -65,4 +66,22 @@ async function signIn(req, res) {
   }
 }
 
-export { signUp, signIn };
+async function getUser(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await db
+      .collection("users")
+      .findOne({ _id: new ObjectId(id) });
+
+    if (user) {
+      res.status(200).send(user);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+
+export { signUp, signIn, getUser };

@@ -39,6 +39,8 @@ export async function postCheckout(req, res) {
   };
 
   const checkout = {
+    user,
+    cart,
     bank,
     adress,
   };
