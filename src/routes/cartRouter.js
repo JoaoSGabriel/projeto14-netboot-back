@@ -12,8 +12,8 @@ const cartRouter = Router();
 cartRouter.use(privateToken);
 
 cartRouter.post("/cart", addCartProducts);
-cartRouter.get("/cart", getCartProducts);
+cartRouter.get("/cart/:id", getCartProducts);
 cartRouter.delete("/cart/:id", removeCartProducts);
-cartRouter.delete("/cleanCart", cleanCart);
+cartRouter.delete("/cleanCart/:id", cleanCart);
 
 export default cartRouter;
