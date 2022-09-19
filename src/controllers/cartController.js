@@ -1,8 +1,26 @@
 import db from "../db.js";
 import { ObjectId } from "mongodb";
+import { cartSchema } from "../schemas/cartSchema.js";
 
 async function addCartProducts(req, res) {
-  const { name, price, brand, sizes, description, URLimage } = req.body;
+  const {
+    user_ID,
+    product_ID,
+    name,
+    price,
+    brand,
+    size,
+    description,
+    URLimage,
+    qt,
+  } = req.body;
+
+  const validationCart = cartSchema.validate(req.body, { abortEarly: false });
+  if (validationCart.error) {
+    return res
+      .status(422)
+      .send(validationCart.error.details.map((value) => value.message));
+  }
 
   try {
     await db.collection("cart").insertOne(req.body);
@@ -13,8 +31,13 @@ async function addCartProducts(req, res) {
 }
 
 async function getCartProducts(req, res) {
+  const { id } = req.params;
+
   try {
-    const products = await db.collection("cart").find().toArray();
+    const products = await db
+      .collection("cart")
+      .find({ user_ID: id })
+      .toArray();
     res.status(200).send(products);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -33,12 +56,46 @@ async function removeCartProducts(req, res) {
 }
 
 async function cleanCart(req, res) {
+  const { id } = req.params;
+
   try {
-    await db.collection("cart").deleteMany({});
+    await db.collection("cart").deleteMany({ user_ID: id });
     res.sendStatus(200);
   } catch (error) {
     return res.status(500).send(error.message);
   }
 }
 
-export { addCartProducts, getCartProducts, removeCartProducts, cleanCart };
+async function updateQtCart(req, res) {
+  const add = req.query.add;
+  const sub = req.query.sub;
+  const { id } = req.params;
+
+  if (add && !sub) {
+    try {
+      await db
+        .collection("cart")
+        .updateOne({ _id: new ObjectId(id) }, { $inc: { qt: +1 } });
+      res.sendStatus(200);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  } else if (!add && sub) {
+    try {
+      await db
+        .collection("cart")
+        .updateOne({ _id: new ObjectId(id) }, { $inc: { qt: -1 } });
+      res.sendStatus(200);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  }
+}
+
+export {
+  addCartProducts,
+  getCartProducts,
+  removeCartProducts,
+  cleanCart,
+  updateQtCart,
+};
