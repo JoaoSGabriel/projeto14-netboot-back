@@ -3,7 +3,17 @@ import { ObjectId } from "mongodb";
 import { cartSchema } from "../schemas/cartSchema.js";
 
 async function addCartProducts(req, res) {
-  const { id, name, price, brand, size, description, URLimage, qt } = req.body;
+  const {
+    user_ID,
+    product_ID,
+    name,
+    price,
+    brand,
+    size,
+    description,
+    URLimage,
+    qt,
+  } = req.body;
 
   const validationCart = cartSchema.validate(req.body, { abortEarly: false });
   if (validationCart.error) {
@@ -46,10 +56,10 @@ async function removeCartProducts(req, res) {
 }
 
 async function cleanCart(req, res) {
-  const { user_id } = req.params;
+  const { id } = req.params;
 
   try {
-    await db.collection("cart").deleteMany({ _id: new ObjectId(user_id) });
+    await db.collection("cart").deleteMany({ user_ID: id });
     res.sendStatus(200);
   } catch (error) {
     return res.status(500).send(error.message);
@@ -62,7 +72,6 @@ async function updateQtCart(req, res) {
   const { id } = req.params;
 
   if (add && !sub) {
-    console.log("add");
     try {
       await db
         .collection("cart")
