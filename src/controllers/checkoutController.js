@@ -5,6 +5,7 @@ import {
   adressSchema,
 } from "../schemas/checkoutSchema.js";
 import { stripHtml } from "string-strip-html";
+import { ObjectId } from "mongodb";
 
 export async function postCheckout(req, res) {
   let { user, cart, bankData, adressData } = req.body;
@@ -64,15 +65,20 @@ export async function postCheckout(req, res) {
 
   try {
     await db.collection("checkout").insertOne(checkout);
-    res.sendStatus(200);
+
+    res.status(200).send({ _id: checkout._id });
   } catch (error) {
     res.status(500).send(error.message);
   }
 }
 
 export async function getCheckout(req, res) {
+  const { id } = req.params;
+
   try {
-    const data = await db.collection("checkout").find().toArray();
+    const data = await db
+      .collection("checkout")
+      .findOne({ _id: new ObjectId(id) });
     res.status(200).send(data);
   } catch (error) {
     res.status(500).send(error.message);
