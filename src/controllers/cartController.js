@@ -21,12 +21,12 @@ async function addCartProducts(req, res) {
 }
 
 async function getCartProducts(req, res) {
-  const { user_id } = req.params;
+  const { id } = req.params;
 
   try {
     const products = await db
       .collection("cart")
-      .find({ _id: new ObjectId(user_id) })
+      .find({ user_ID: id })
       .toArray();
     res.status(200).send(products);
   } catch (error) {
@@ -56,4 +56,37 @@ async function cleanCart(req, res) {
   }
 }
 
-export { addCartProducts, getCartProducts, removeCartProducts, cleanCart };
+async function updateQtCart(req, res) {
+  const add = req.query.add;
+  const sub = req.query.sub;
+  const { id } = req.params;
+
+  if (add && !sub) {
+    console.log("add");
+    try {
+      await db
+        .collection("cart")
+        .updateOne({ _id: new ObjectId(id) }, { $inc: { qt: +1 } });
+      res.sendStatus(200);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  } else if (!add && sub) {
+    try {
+      await db
+        .collection("cart")
+        .updateOne({ _id: new ObjectId(id) }, { $inc: { qt: -1 } });
+      res.sendStatus(200);
+    } catch (error) {
+      return res.status(500).send(error.message);
+    }
+  }
+}
+
+export {
+  addCartProducts,
+  getCartProducts,
+  removeCartProducts,
+  cleanCart,
+  updateQtCart,
+};
