@@ -8,4 +8,4 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(5000, () => console.log("Listen on port 5000"));
+app.listen(process.env.PORT, () => console.log(`Listen on port ${process.env.PORT}`));
