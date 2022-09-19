@@ -1,14 +1,13 @@
 import db from "../db.js";
 import {
   userSchema,
-  cartSchema,
   bankSchema,
   adressSchema,
 } from "../schemas/checkoutSchema.js";
 import { stripHtml } from "string-strip-html";
 
 export async function postCheckout(req, res) {
-  let { user, cart, bank, adress } = req.body;
+  let { user, cart, bankData, adressData } = req.body;
 
   const validationUser = userSchema.validate(user, { abortEarly: false });
   if (validationUser.error) {
@@ -17,51 +16,50 @@ export async function postCheckout(req, res) {
       .send(validationUser.error.details.map((value) => value.message));
   }
 
-  const validationCart = cartSchema.validate(cart, { abortEarly: false });
-  if (validationCart.error) {
-    return res
-      .status(422)
-      .send(validationCart.error.details.map((value) => value.message));
-  }
-
-  const validationBank = bankSchema.validate(bank, { abortEarly: false });
+  const validationBank = bankSchema.validate(bankData, { abortEarly: false });
   if (validationBank.error) {
     return res
       .status(422)
       .send(validationBank.error.details.map((value) => value.message));
   }
 
-  const validationAdress = adressSchema.validate(adress, { abortEarly: false });
+  const validationAdress = adressSchema.validate(adressData, {
+    abortEarly: false,
+  });
   if (validationAdress.error) {
     return res
       .status(422)
       .send(validationAdress.error.details.map((value) => value.message));
   }
 
-  bank = {
-    country: stripHtml(bank.country),
-    adress: stripHtml(bank.adress),
-    numberPhone,
-    cep,
-    adressNumber,
-    complement: stripHtml(bank.complement),
-    district: stripHtml(bank.district),
-    city: stripHtml(bank.city),
-    state: stripHtml(bank.state),
+  if (bankData.complement) {
+    bankData.complement = stripHtml(bankData.complement);
+  }
+
+  adressData = {
+    country: stripHtml(adressData.country).result,
+    adress: stripHtml(adressData.adress).result,
+    numberPhone: adressData.numberPhone,
+    cep: adressData.cep,
+    adressNumber: adressData.adressNumber,
+    complement: adressData.complement,
+    district: stripHtml(adressData.district).result,
+    city: stripHtml(adressData.city).result,
+    state: stripHtml(adressData.state).result,
   };
 
-  adress = {
-    number,
-    name: stripHtml(adress.name),
-    date: stripHtml(adress.date),
-    cvv: stripHtml(adress.cvv),
+  bankData = {
+    numberCard: bankData.numberCard,
+    name: stripHtml(bankData.name).result,
+    date: stripHtml(bankData.date).result,
+    cvv: bankData.cvv,
   };
 
   const checkout = {
     user,
     cart,
-    bank,
-    adress,
+    bankData,
+    adressData,
   };
 
   try {
